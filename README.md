@@ -47,7 +47,6 @@ Berikut adalah struktur file dan direktori penting dalam proyek ini:
 ├── README.md           # File ini (dokumentasi proyek)
 └── requirements.txt    # Daftar semua dependensi Python yang dibutuhkan
 
-
 ---
 
 ## 🚀 Menjalankan Proyek Secara Lokal
