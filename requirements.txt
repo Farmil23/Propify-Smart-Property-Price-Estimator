@@ -1,0 +1,16 @@
+# Core Libraries
+pandas
+scikit-learn
+numpy
+
+# Visualization
+matplotlib
+seaborn
+
+# MLOps & Deployment
+mlflow
+bentoml
+streamlit
+
+# Notebook Environment
+jupyterlab

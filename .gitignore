@@ -1,0 +1,19 @@
+# Lingkungan Virtual
+venv/
+.venv/
+env/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Folder MLflow & BentoML
+mlruns/
+bentoml/
+
+# File Notebook Checkpoints
+.ipynb_checkpoints/
+
+# File spesifik OS
+.DS_Store
+Thumbs.db
