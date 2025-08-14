@@ -1,16 +1,8 @@
-# Core Libraries
+Flask
+gunicorn
+joblib
+numpy
 pandas
 scikit-learn
-numpy
-
-# Visualization
-matplotlib
-seaborn
-
-# MLOps & Deployment
-mlflow
-bentoml
-streamlit
-
-# Notebook Environment
-jupyterlab
+xgboost
+Werkzeug

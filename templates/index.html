@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% block title %}Propify - Prediksi Harga Properti Jabodetabek{% endblock %}
+
+{% block content %}
+<style>
+    .hero-section {
+        padding-top: 56px; margin-top: 0;
+        height: 100vh;
+        background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop');
+        background-size: cover; background-position: center;
+        display: flex; align-items: center; justify-content: center; text-align: center; color: white;
+    }
+    .hero-section h1 { font-size: 3.5rem; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .feature-icon { font-size: 3rem; color: #0d6efd; }
+    .section-title { margin-bottom: 4rem; text-align: center; }
+    section { padding: 80px 0; }
+</style>
+
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-4 mb-3">Prediksi Harga Properti Menjadi Cerdas</h1>
+        <p class="lead fs-4">Manfaatkan teknologi AI untuk mendapatkan estimasi harga akurat di Jabodetabek.</p>
+        <a href="{{ url_for('predictor_page') }}" class="btn btn-primary btn-lg mt-3 px-5 py-3">Coba Prediktor Gratis</a>
+    </div>
+</div>
+
+<div class="container">
+    <section id="about">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=2070&auto=format&fit=crop" class="img-fluid rounded shadow" alt="Tentang Proyek">
+            </div>
+            <div class="col-lg-6 ps-lg-5 mt-4 mt-lg-0">
+                <h2 class="fw-bold mb-3">Tentang Proyek Propify</h2>
+                <p class="text-muted">Propify adalah aplikasi web cerdas hasil karya **Farhan Kamil Hermansyah**, yang dirancang untuk mendemonstrasikan penerapan *machine learning* secara *end-to-end*. Proyek ini mencakup seluruh siklus hidup data science: mulai dari pengumpulan data, analisis, pelatihan model, hingga *deployment* aplikasi interaktif di cloud.</p>
+                <p>Model prediksi kami menggunakan **XGBoost Regressor**, dilatih pada ribuan data properti di Jabodetabek untuk memberikan estimasi harga yang akurat dan dapat diandalkan.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="bg-light">
+        <div class="section-title">
+            <h2 class="fw-bold">Bagaimana Cara Kerjanya?</h2>
+            <p class="text-muted">Tiga langkah mudah untuk mendapatkan estimasi harga.</p>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4"><div class="mb-3"><i class="bi bi-input-cursor-text feature-icon"></i></div><h4>1. Isi Data</h4><p class="text-muted">Masukkan detail spesifikasi properti Anda pada formulir yang telah disediakan.</p></div>
+            <div class="col-md-4"><div class="mb-3"><i class="bi bi-cpu feature-icon"></i></div><h4>2. Proses AI</h4><p class="text-muted">Model XGBoost kami akan menganalisis data Anda dan membandingkannya dengan ribuan data pasar.</p></div>
+            <div class="col-md-4"><div class="mb-3"><i class="bi bi-cash-coin feature-icon"></i></div><h4>3. Dapatkan Hasil</h4><p class="text-muted">Estimasi harga properti akan ditampilkan secara instan di layar Anda.</p></div>
+        </div>
+    </section>
+
+    <section id="tech-stack">
+        <div class="section-title">
+            <h2 class="fw-bold">Teknologi yang Digunakan</h2>
+        </div>
+        <div class="row text-center text-muted justify-content-center">
+            <div class="col-md-2 col-4 mb-3"><h5><i class="bi bi-filetype-py"></i> Python</h5></div>
+            <div class="col-md-2 col-4 mb-3"><h5><i class="bi bi-bootstrap"></i> Flask</h5></div>
+            <div class="col-md-2 col-4 mb-3"><h5><i class="bi bi-motherboard"></i> Scikit-learn</h5></div>
+            <div class="col-md-2 col-4 mb-3"><h5><i class="bi bi-bar-chart-line"></i> Pandas</h5></div>
+            <div class="col-md-2 col-4 mb-3"><h5><i class="bi bi-cloud-arrow-up"></i> AWS</h5></div>
+            <div class="col-md-2 col-4 mb-3"><h5><i class="bi bi-github"></i> Git</h5></div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const nav = document.querySelector('.navbar');
+    // Fungsi untuk mengubah style navbar saat scroll
+    const handleScroll = () => {
+        // Hanya berlaku di halaman home
+        if (document.querySelector('.hero-section')) {
+            if (window.scrollY > 50) {
+                nav.classList.add('navbar-solid');
+                nav.classList.remove('navbar-on-top');
+            } else {
+                nav.classList.remove('navbar-solid');
+                nav.classList.add('navbar-on-top');
+            }
+        }
+    };
+    // Panggil fungsi saat halaman di-scroll
+    window.addEventListener('scroll', handleScroll);
+    // Panggil fungsi saat halaman pertama kali dimuat
+    document.addEventListener('DOMContentLoaded', handleScroll);
+</script>
+{% endblock %}
