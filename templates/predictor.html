@@ -5,7 +5,7 @@
 {% block content %}
 <style>
     .predictor-container { margin-top: 120px; margin-bottom: 60px; }
-    .form-container { background: #ffffff; padding: 2.5rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .form-container { background: #ffffff; padding: 2.5rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
     .visual-container { position: relative; border-radius: 15px; overflow: hidden; min-height: 400px; background-size: cover; background-position: center; }
     .form-label { font-weight: 500; }
     .form-section-title { font-weight: 600; color: #0d6efd; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e9ecef; }
@@ -14,12 +14,23 @@
         width: 40px; height: 40px; animation: spin 1s linear infinite;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    .result-box { background-color: #e9f5ff; border-left: 5px solid #0d6efd; padding: 2rem; border-radius: 8px; }
+    .result-box .price { font-size: 2.5rem; font-weight: 700; color: #0b5ed7; }
+    .recap-item { font-size: 0.9rem; }
+    .disclaimer { font-size: 0.8rem; color: #6c757d; margin-top: 1rem; }
+    
+    /* (BARU) Style untuk Faktor Penentu Harga */
+    .factors-list .list-group-item { border: none; padding-left: 0; background: transparent; }
+    .factor-icon.positif { color: #198754; } /* Hijau */
+    .factor-icon.negatif { color: #dc3545; } /* Merah */
+    .factor-icon.netral { color: #6c757d; } /* Abu-abu */
 </style>
 
 <div class="container predictor-container">
     <div class="row align-items-stretch">
         <div class="col-lg-5 d-none d-lg-block">
-            <div class="visual-container p-4 d-flex flex-column justify-content-end text-white" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('https://wallpapercave.com/dwp2x/wp3309206.jpg');">
+            <div class="visual-container p-4 d-flex flex-column justify-content-end text-white" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1992&auto=format&fit=crop');">
                 <h3 class="fw-bold">Satu Langkah Lagi</h3>
                 <p>Menuju estimasi harga yang akurat berdasarkan data pasar terkini.</p>
             </div>
@@ -28,6 +39,7 @@
         <div class="col-lg-7">
             <div class="form-container">
                 <form id="prediction-form" action="{{ url_for('predict') }}" method="post">
+                    <!-- Semua field input Anda tetap sama di sini -->
                     <h4 class="form-section-title">Detail Properti Anda</h4>
                     <div class="row">
                         <div class="col-md-6 mb-4">
@@ -35,7 +47,7 @@
                             <select class="form-select" id="city" name="city" required>
                                 <option selected disabled value="">Pilih Kota...</option>
                                 {% for city in cities %}
-                                <option value="{{ city }}">{{ city }}</option>
+                                <option value="{{ city }}" {% if form_data and form_data.city == city %}selected{% endif %}>{{ city }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -45,16 +57,16 @@
                                 <option value="">Pilih Kota Terlebih Dahulu</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mb-4"><label for="land_size_m2" class="form-label"><i class="bi bi-aspect-ratio"></i> Luas Tanah (m²)</label><input type="number" class="form-control" id="land_size_m2" name="land_size_m2" placeholder="120" required></div>
-                        <div class="col-md-6 mb-4"><label for="building_size_m2" class="form-label"><i class="bi bi-arrows-fullscreen"></i> Luas Bangunan (m²)</label><input type="number" class="form-control" id="building_size_m2" name="building_size_m2" placeholder="90" required></div>
-                        <div class="col-md-4 mb-4"><label for="bedrooms" class="form-label"><i class="bi bi-door-open"></i> Kamar Tidur</label><input type="number" class="form-control" id="bedrooms" name="bedrooms" value="3" required></div>
-                        <div class="col-md-4 mb-4"><label for="bathrooms" class="form-label"><i class="bi bi-droplet"></i> Kamar Mandi</label><input type="number" class="form-control" id="bathrooms" name="bathrooms" value="2" required></div>
-                        <div class="col-md-4 mb-4"><label for="floors" class="form-label"><i class="bi bi-layers"></i> Lantai</label><input type="number" class="form-control" id="floors" name="floors" value="1" required></div>
-                        <div class="col-md-4 mb-4"><label for="carports" class="form-label"><i class="bi bi-p-square"></i> Carport</label><input type="number" class="form-control" id="carports" name="carports" value="1" required></div>
-                        <div class="col-md-4 mb-4"><label for="garages" class="form-label"><i class="bi bi-car-front-fill"></i> Garasi</label><input type="number" class="form-control" id="garages" name="garages" value="0" required></div>
-                        <div class="col-md-4 mb-4"><label for="building_age" class="form-label"><i class="bi bi-calendar-event"></i> Usia (Tahun)</label><input type="number" class="form-control" id="building_age" name="building_age" value="5" required></div>
-                        <div class="col-md-6 mb-4"><label for="electricity" class="form-label"><i class="bi bi-lightning-charge"></i> Listrik (VA)</label><input type="number" class="form-control" id="electricity" name="electricity" placeholder="2200" required></div>
-                        <div class="col-md-6 mb-4"><label for="condition" class="form-label"><i class="bi bi-house-heart"></i> Furnishing</label><select class="form-select" id="condition" name="condition" required><option value="unfurnished">Unfurnished</option><option value="semi furnished">Semi Furnished</option><option value="furnished">Furnished</option></select></div>
+                        <div class="col-md-6 mb-4"><label for="land_size_m2" class="form-label"><i class="bi bi-aspect-ratio"></i> Luas Tanah (m²)</label><input type="number" class="form-control" id="land_size_m2" name="land_size_m2" placeholder="120" value="{{ form_data.land_size_m2 if form_data else '' }}" required></div>
+                        <div class="col-md-6 mb-4"><label for="building_size_m2" class="form-label"><i class="bi bi-arrows-fullscreen"></i> Luas Bangunan (m²)</label><input type="number" class="form-control" id="building_size_m2" name="building_size_m2" placeholder="90" value="{{ form_data.building_size_m2 if form_data else '' }}" required></div>
+                        <div class="col-md-4 mb-4"><label for="bedrooms" class="form-label"><i class="bi bi-door-open"></i> Kamar Tidur</label><input type="number" class="form-control" id="bedrooms" name="bedrooms" value="{{ form_data.bedrooms if form_data else '3' }}" required></div>
+                        <div class="col-md-4 mb-4"><label for="bathrooms" class="form-label"><i class="bi bi-droplet"></i> Kamar Mandi</label><input type="number" class="form-control" id="bathrooms" name="bathrooms" value="{{ form_data.bathrooms if form_data else '2' }}" required></div>
+                        <div class="col-md-4 mb-4"><label for="floors" class="form-label"><i class="bi bi-layers"></i> Lantai</label><input type="number" class="form-control" id="floors" name="floors" value="{{ form_data.floors if form_data else '1' }}" required></div>
+                        <div class="col-md-4 mb-4"><label for="carports" class="form-label"><i class="bi bi-p-square"></i> Carport</label><input type="number" class="form-control" id="carports" name="carports" value="{{ form_data.carports if form_data else '1' }}" required></div>
+                        <div class="col-md-4 mb-4"><label for="garages" class="form-label"><i class="bi bi-car-front-fill"></i> Garasi</label><input type="number" class="form-control" id="garages" name="garages" value="{{ form_data.garages if form_data else '0' }}" required></div>
+                        <div class="col-md-4 mb-4"><label for="building_age" class="form-label"><i class="bi bi-calendar-event"></i> Usia (Tahun)</label><input type="number" class="form-control" id="building_age" name="building_age" value="{{ form_data.building_age if form_data else '5' }}" required></div>
+                        <div class="col-md-6 mb-4"><label for="electricity" class="form-label"><i class="bi bi-lightning-charge"></i> Listrik (VA)</label><input type="number" class="form-control" id="electricity" name="electricity" placeholder="2200" value="{{ form_data.electricity if form_data else '' }}" required></div>
+                        <div class="col-md-6 mb-4"><label for="condition" class="form-label"><i class="bi bi-house-heart"></i> Furnishing</label><select class="form-select" id="condition" name="condition" required><option value="unfurnished" {% if form_data and form_data.condition == 'unfurnished' %}selected{% endif %}>Unfurnished</option><option value="semi furnished" {% if form_data and form_data.condition == 'semi furnished' %}selected{% endif %}>Semi Furnished</option><option value="furnished" {% if form_data and form_data.condition == 'furnished' %}selected{% endif %}>Furnished</option></select></div>
                     </div>
                     <div class="d-grid mt-3">
                         <button id="submit-btn" type="submit" class="btn btn-primary btn-lg">Hitung Estimasi</button>
@@ -62,10 +74,35 @@
                     </div>
                 </form>
 
-                {% if prediction_text %}
-                <div id="result-container" class="alert alert-success mt-4 text-center" role="alert">
-                    <h4 class="alert-heading">Estimasi Harga Properti</h4>
-                    <p class="fs-2 fw-bold mb-0">{{ prediction_text }}</p>
+                {% if prediction_text and 'Error' not in prediction_text %}
+                <div id="result-container" class="mt-5">
+                    <div class="result-box">
+                        <p class="mb-2 text-uppercase fw-bold text-muted">Estimasi Harga Properti</p>
+                        <p class="price mb-3">{{ prediction_text }}</p>
+                        
+                        <!-- (BARU) Blok Faktor Penentu Harga -->
+                        {% if factors %}
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="fw-bold">Faktor Kunci Penentu Harga</h6>
+                            <ul class="list-group factors-list">
+                                {% for factor in factors %}
+                                <li class="list-group-item d-flex align-items-start">
+                                    <i class="bi {{ factor.icon }} fs-4 me-3 factor-icon {{ factor.impact }}"></i>
+                                    <div>{{ factor.text | safe }}</div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('predictor_page') }}" class="btn btn-outline-primary">Buat Prediksi Baru</a>
+                    </div>
+                </div>
+                {% elif prediction_text %}
+                <!-- Tampilan jika ada error -->
+                <div id="result-container" class="alert alert-danger mt-4 text-center" role="alert">
+                    {{ prediction_text }}
                 </div>
                 {% endif %}
             </div>
@@ -75,25 +112,28 @@
 {% endblock %}
 
 {% block scripts %}
+{{ super() }} <!-- Memanggil script dari layout.html -->
 <script>
-    // Data kecamatan yang dikirim dari Flask
     const districtData = {{ district_data | tojson }};
-
     const citySelect = document.getElementById('city');
     const districtSelect = document.getElementById('district');
-
-    citySelect.addEventListener('change', function() {
-        const selectedCity = this.value;
+    
+    function populateDistricts(selectedCity, selectedDistrict = null) {
         const districts = districtData[selectedCity] || [];
-        
         districtSelect.innerHTML = '<option value="">Pilih Kecamatan...</option>';
         
         districts.forEach(function(district) {
             const option = new Option(district, district);
+            if (district === selectedDistrict) {
+                option.selected = true;
+            }
             districtSelect.add(option);
         });
+        districtSelect.disabled = districts.length === 0;
+    }
 
-        districtSelect.disabled = false;
+    citySelect.addEventListener('change', function() {
+        populateDistricts(this.value);
     });
 
     document.getElementById('prediction-form').addEventListener('submit', function() {
@@ -101,9 +141,18 @@
         document.getElementById('loading-spinner').classList.remove('d-none');
     });
 
-    // Scroll ke hasil jika ada
-    {% if scroll_to_result %}
-        document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
-    {% endif %}
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if form_data %}
+            const previouslySelectedCity = "{{ form_data.city }}";
+            if (previouslySelectedCity) {
+                citySelect.value = previouslySelectedCity;
+                populateDistricts(previouslySelectedCity, "{{ form_data.district }}");
+            }
+        {% endif %}
+
+        {% if scroll_to_result %}
+            document.getElementById('result-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        {% endif %}
+    });
 </script>
 {% endblock %}
