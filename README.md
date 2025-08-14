@@ -29,22 +29,22 @@ Propify adalah aplikasi web cerdas yang dapat memprediksi harga properti di wila
 Berikut adalah struktur file dan direktori penting dalam proyek ini:
 
 .
-├── .ebextensions/      # Direktori untuk konfigurasi spesifik AWS Elastic Beanstalk
-├── .github/            # (Opsional) Direktori untuk workflow GitHub Actions
-├── data/               # Direktori untuk dataset (raw & processed)
-│   └── raw/
-├── model/              # Direktori untuk menyimpan file model machine learning (.joblib)
-│   └── model.joblib
-├── notebooks/          # Direktori untuk Jupyter Notebooks (eksplorasi & pemodelan)
-├── static/             # Direktori untuk file statis (CSS, JavaScript, Gambar)
-├── templates/          # Direktori untuk file HTML (Jinja2)
-│   ├── index.html
-│   └── predictor.html
-├── .gitignore          # File untuk mengabaikan file/folder yang tidak perlu di-commit
-├── app.py              # File utama aplikasi Flask (logika backend & routing)
-├── Procfile            # Perintah untuk memberitahu server cara menjalankan aplikasi
-├── README.md           # File ini (dokumentasi proyek)
-└── requirements.txt    # Daftar semua dependensi Python yang dibutuhkan
+|-- .ebextensions/      # Direktori untuk konfigurasi spesifik AWS Elastic Beanstalk
+|-- .github/            # (Opsional) Direktori untuk workflow GitHub Actions
+|-- data/               # Direktori untuk dataset (raw & processed)
+|   +-- raw/
+|-- model/              # Direktori untuk menyimpan file model machine learning (.joblib)
+|   +-- model.joblib
+|-- notebooks/          # Direktori untuk Jupyter Notebooks (eksplorasi & pemodelan)
+|-- static/             # Direktori untuk file statis (CSS, JavaScript, Gambar)
+|-- templates/          # Direktori untuk file HTML (Jinja2)
+|   |-- index.html
+|   +-- predictor.html
+|-- .gitignore          # File untuk mengabaikan file/folder yang tidak perlu di-commit
+|-- app.py              # File utama aplikasi Flask (logika backend & routing)
+|-- Procfile            # Perintah untuk memberitahu server cara menjalankan aplikasi
+|-- README.md           # File ini (dokumentasi proyek)
++-- requirements.txt    # Daftar semua dependensi Python yang dibutuhkan
 
 ---
 
