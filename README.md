@@ -97,4 +97,4 @@ Proyek ini dilisensikan di bawah [MIT License](LICENSE).
 
 ---
 
-Dibuat dengan ❤️ oleh **[NAMA ANDA]**.
+Dibuat dengan ❤️ oleh **Farhan kamil hermansyah**.
