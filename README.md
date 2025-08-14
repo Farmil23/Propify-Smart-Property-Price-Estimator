@@ -3,7 +3,6 @@
 Propify adalah aplikasi web cerdas yang dapat memprediksi harga properti di wilayah Jabodetabek berdasarkan fitur-fitur spesifik. Proyek ini menggunakan model machine learning yang telah dilatih untuk memberikan estimasi harga yang akurat dan informatif.
 
 ![Demo Aplikasi](sementara aplikasi dimatikan untuk menghemat biaya, jika ingin melihat demo aplikasi, hubungi 089609656714 atau instagram @mashivee - terimakasih :))
-_^ Ganti link di atas dengan link screenshot aplikasi Anda yang sedang berjalan_
 
 ---
 
