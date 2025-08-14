@@ -1,9 +1,15 @@
+import os
 from flask import Flask, render_template, request
 import pandas as pd
 import joblib
 from datetime import datetime
 
+# Inisialisasi aplikasi Flask
 app = Flask(__name__)
+
+# (PERBAIKAN) Menentukan path absolut ke direktori root aplikasi
+# Ini memastikan file seperti model.joblib selalu ditemukan, bahkan di server.
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # --- Data Kecamatan per Kota (untuk dropdown dinamis) ---
 KECAMATAN_DATA = {
@@ -20,19 +26,26 @@ KECAMATAN_DATA = {
 }
 
 # --- Pemuatan Model ---
+model = None
 try:
-    model = joblib.load("model/model.joblib")
+    # (PERBAIKAN) Menggunakan path absolut untuk memuat model
+    model_path = os.path.join(APP_ROOT, 'model', 'model.joblib')
+    model = joblib.load(model_path)
+    print(f"Model berhasil dimuat dari: {model_path}")
 except FileNotFoundError:
-    model = None
-    print("Error: File model/model.joblib tidak ditemukan. Pastikan file ada di direktori yang benar.")
+    print(f"Error: File model/model.joblib tidak ditemukan. Pastikan path sudah benar.")
+except Exception as e:
+    print(f"Terjadi error lain saat memuat model: {e}")
 
+
+# Daftar fitur yang diharapkan oleh model
 EXPECTED_FEATURES = [
     'district', 'city', 'bedrooms', 'bathrooms', 'land_size_m2',
     'building_size_m2', 'carports', 'electricity', 'floors', 'building_age',
     'garages', 'condition'
 ]
 
-# --- (BARU) Fungsi untuk menganalisis faktor harga ---
+# --- Fungsi untuk menganalisis faktor harga ---
 def get_price_factors(data):
     """
     Menganalisis input form dan menghasilkan daftar faktor penentu harga.
@@ -114,39 +127,42 @@ def predictor_page():
 @app.route('/predict', methods=['POST'])
 def predict():
     if model is None:
-        return render_template('predictor.html', prediction_text="Error: Model tidak dapat dimuat.", cities=KECAMATAN_DATA.keys(), district_data=KECAMATAN_DATA)
+        return render_template('predictor.html', prediction_text="Error: Model tidak dapat dimuat. Hubungi administrator.", cities=KECAMATAN_DATA.keys(), district_data=KECAMATAN_DATA)
 
     form_data = request.form.to_dict()
     try:
         input_df = pd.DataFrame([form_data], columns=EXPECTED_FEATURES)
         
+        # Konversi tipe data sesuai kebutuhan model
         input_df = input_df.astype({
             'bedrooms': int, 'bathrooms': int, 'land_size_m2': float,
             'building_size_m2': float, 'carports': int, 'electricity': int,
             'floors': int, 'building_age': int, 'garages': int
         })
 
+        # Lakukan prediksi
         prediction = model.predict(input_df)[0]
         predicted_price = f"Rp {prediction * 1_000_000:,.0f}".replace(',', '.')
         
-        # (BARU) Panggil fungsi untuk mendapatkan analisis faktor
+        # Panggil fungsi untuk mendapatkan analisis faktor
         price_factors = get_price_factors(form_data)
         
         return render_template('predictor.html', 
                                prediction_text=predicted_price,
                                cities=KECAMATAN_DATA.keys(), 
                                district_data=KECAMATAN_DATA,
-                               form_data=form_data,
+                               form_data=form_data, # Kirim kembali data form untuk ditampilkan ulang
                                factors=price_factors, # Kirim faktor ke template
                                scroll_to_result=True)
 
     except Exception as e:
-        error_message = f"Terjadi kesalahan: Pastikan semua kolom terisi dengan benar. ({str(e)})"
+        error_message = f"Terjadi kesalahan: Pastikan semua kolom terisi dengan benar. (Detail: {str(e)})"
         return render_template('predictor.html', 
                                prediction_text=error_message,
                                cities=KECAMATAN_DATA.keys(), 
                                district_data=KECAMATAN_DATA,
                                form_data=form_data)
 
+# Blok ini hanya untuk menjalankan server saat development di komputer lokal
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
